@@ -21,13 +21,12 @@ jobs:
       working-directory: ${{env.working-dir}}
       run: dotnet build  --configuration  Release --version-suffix prerelease-$(date +%Y%m%d%H%M%S)
       shell: bash
-    - name: Publish nuget
-      run: |
-           echo [repository]
-           echo [user]
-           for f in ./[repository]/bin/Release/*.nupkg
-           do
-             curl -vX PUT -u "[user]:${{ secrets.GHPackagesToken }}" -F package=@$f https://nuget.pkg.github.com/[user]/
-           done
-      shell: bash
+    - name: Install NuGet client
+      uses: warrenbuckley/Setup-Nuget@v1
+
+    - name: Add private GitHub registry to NuGet
+      run: nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/ORGANIZATION_NAME/index.json -Username ORGANIZATION_NAME -Password ${{ secrets.GHPackagesToken }}
+
+    - name: Push generated package to GitHub registry
+      run: nuget push .\SOLUTION_FOLDER\PROJECT_FOLDER\out\*.nupkg -Source "GPR" -SkipDuplicate
   
