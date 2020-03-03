@@ -13,6 +13,8 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@master
+    - name: List directories
+      run: dir /s /b /o:gn
     - name: Build solution and generate NuGet package
       run: |  
           cd ClassLibrary1
