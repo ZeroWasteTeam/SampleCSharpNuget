@@ -8,16 +8,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      working-dir: ./SampleCSharpNuget/ClassLibrary1
     steps:
     - name: Checkout repo
       uses: actions/checkout@v1
-    - name: build with dotnet
-      run: dotnet build --configuration Release --version-suffix prerelease-$(date +%Y%m%d%H%M%S)
-      shell: bash
     - name: List files before build
       run: |
           pwd 
           ls -a
+    - name: build with dotnet
+      working-directory: ${{env.working-dir}}
+      run: dotnet build  --configuration  Release --version-suffix prerelease-$(date +%Y%m%d%H%M%S)
+      shell: bash
     - name: Publish nuget
       run: |
            for f in ./[repository]/bin/Release/*.nupkg
