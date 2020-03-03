@@ -23,6 +23,8 @@ jobs:
       shell: bash
     - name: Publish nuget
       run: |
+           echo [repository]
+           echo [user]
            for f in ./[repository]/bin/Release/*.nupkg
            do
              curl -vX PUT -u "[user]:${{ secrets.GHPackagesToken }}" -F package=@$f https://nuget.pkg.github.com/[user]/
