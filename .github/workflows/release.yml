@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@master
     - name: Build solution and generate NuGet package
       run: |  
-          cd SOLUTION_FOLDER
+          cd ClassLibrary1
           dotnet pack -c Release -o out  
 
     - name: Install NuGet client
