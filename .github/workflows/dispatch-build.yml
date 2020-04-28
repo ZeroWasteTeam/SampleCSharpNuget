@@ -1,0 +1,40 @@
+name: Repository Dispatch Build
+
+on:
+  repository_dispatch:
+
+jobs: 
+   repository-dispatch-build:
+    name: Repository Dispatch Build
+    runs-on: ubuntu-latest
+    env:
+      working-dir: ./SampleCSharpNuget/ClassLibrary1
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v1
+    - name: Checkout triggered sha
+      run: git checkout -f "${{  github.event.client_payload.buildSha }}"
+    
+    - name: Get Release Version
+      id: compute-release-version
+      uses: ZeroWasteTeam/actions/compute-version@master
+      with:
+        build-branch: ${{ github.event.client_payload.buildBranch }}
+        is-release-flow: false # This line is not needed for docker build. For docker build the value has to be true (which is the default) value
+    - name: build with dotnet
+      working-directory: ${{env.working-dir}}
+      run: dotnet build  --configuration  Release --version-suffix ${{ steps.compute-release-version.outputs.version}}
+      shell: bash
+      
+    - name: List files before build
+      run: |
+          pwd 
+          ls -a 
+    - name: Publish nuget
+      run: |
+           for f in ${{env.working-dir}}/bin/Release/*.nupkg
+           do
+             curl -vX PUT -u "mohitjohri:${{ secrets.GHPackagesToken }}" -F package=@$f https://nuget.pkg.github.com/mohitjohri/
+           done
+      shell: bash
