@@ -25,7 +25,9 @@ jobs:
           dotnet build -c Release
 
     - name: Generate a NuGet package
-      run: dotnet pack --no-build -c Release -o out
+      run: |  
+          cd SampleCSharpNuget 
+          dotnet pack --no-build -c Release -o out
       
     - name: List files after build
       run: |
