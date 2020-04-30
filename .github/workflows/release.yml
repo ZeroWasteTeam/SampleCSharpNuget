@@ -18,16 +18,21 @@ jobs:
         source-url: https://nuget.pkg.github.com/ZeroWasteTeam/index.json
       env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}        
-
+    - name: Get Release Version
+      id: compute-release-version
+      uses: ZeroWasteTeam/actions/compute-version@master
+      with:
+          build-branch: ${{ github.event.client_payload.buildBranch }}
     - name: Build project
       run: |  
           cd SampleCSharpNuget
-          dotnet build -c Release
+          dotnet build -c Release 
 
     - name: Generate a NuGet package
       run: |  
           cd SampleCSharpNuget 
-          dotnet pack --no-build -c Release -o out
+          dotnet pack --no-build -c Release -o out --version ${{ steps.compute-release-version.outputs.version}}
+
       
     - name: List files after build
       run: |
