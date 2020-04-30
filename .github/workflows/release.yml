@@ -9,20 +9,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: Update Nuget package
+
     steps:
     - name: Checkout repo
       uses: actions/checkout@v1
+
     - name: Setup .NET Core @ Latest
       uses: actions/setup-dotnet@v1
       with:
         source-url: https://nuget.pkg.github.com/ZeroWasteTeam/index.json
       env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}        
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}  
+
     - name: Get Release Version
       id: compute-release-version
       uses: ZeroWasteTeam/actions/compute-version@master
       with:
         base-branch: ${{ github.base_ref }} 
+
     - name: Build project
       run: |  
           cd SampleCSharpNuget
@@ -38,5 +42,6 @@ jobs:
       run: |
           pwd 
           ls -R 
+          
     - name: Push generated package to GitHub registry
       run: dotnet nuget push ./SampleCSharpNuget/out/*.nupkg --skip-duplicate --no-symbols true
