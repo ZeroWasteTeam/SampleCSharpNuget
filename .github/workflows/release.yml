@@ -22,7 +22,7 @@ jobs:
       id: compute-release-version
       uses: ZeroWasteTeam/actions/compute-version@master
       with:
-          build-branch: ${{ github.event.client_payload.buildBranch }}
+          build-branch: ${{ github.base_ref }} 
     - name: Build project
       run: |  
           cd SampleCSharpNuget
