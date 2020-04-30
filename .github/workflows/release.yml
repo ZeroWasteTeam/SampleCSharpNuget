@@ -8,24 +8,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      working-dir: ./SampleCSharpNuget/ClassLibrary1
+    name: Update Nuget package
     steps:
     - name: Checkout repo
       uses: actions/checkout@v1
-    - name: build with dotnet
-      working-directory: ${{env.working-dir}}
-      run: dotnet build  --configuration  Release --version-suffix $(date +%Y%m%d%H%M%S)
-      shell: bash
-      
+    - name: Setup .NET Core @ Latest
+      uses: actions/setup-dotnet@v1
+      with:
+        source-url: https://nuget.pkg.github.com/ZeroWasteTeam/index.json
+      env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}        
+
+    - name: Build solution and generate NuGet package
+      run: |  
+        cd <project>
+        dotnet pack -c Release -o out  
     - name: List files before build
       run: |
           pwd 
           ls -a 
-    - name: Publish nuget
-      run: |
-           for f in ${{env.working-dir}}/bin/Release/*.nupkg
-           do
-             curl -vX PUT -u "mohitjohri:${{ secrets.GHPackagesToken }}" -F package=@$f https://nuget.pkg.github.com/mohitjohri/
-           done
-      shell: bash
+    - name: Push generated package to GitHub registry
+      run: dotnet nuget push ./SampleCSharpNuget/out/*.nupkg --skip-duplicate --no-symbols true
