@@ -34,4 +34,4 @@ jobs:
           pwd 
           ls -R 
     - name: Push generated package to GitHub registry
-      run: dotnet nuget push ./SampleCSharpNuget/out/*.nupkg 
+      run: dotnet nuget push ./SampleCSharpNuget/out/*.nupkg --skip-duplicate --no-symbols true
