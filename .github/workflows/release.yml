@@ -35,7 +35,7 @@ jobs:
     - name: Generate a NuGet package
       run: |  
           cd SampleCSharpNuget 
-          dotnet pack --no-build -c Release -o out --version ${{ steps.compute-release-version.outputs.version}}
+          dotnet pack --no-build -c Release -o out --version-suffix ${{ steps.compute-release-version.outputs.version}}
 
       
     - name: List files after build
