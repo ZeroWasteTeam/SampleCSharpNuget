@@ -25,7 +25,7 @@ jobs:
       id: compute-release-version
       uses: ZeroWasteTeam/actions/compute-version@master
       with:
-        base-branch: ${{ github.base_ref }} 
+        build-branch: ${{ github.ref }} 
 
     - name: Build project
       run: |  
